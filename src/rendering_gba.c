@@ -195,36 +195,36 @@ void IWRAM_CODE transform(model_t *model, vertex_t *v)
 
 void IWRAM_CODE fix_borders(uint16_t* target) 
 {
-    int i;
-    for (i = 0; i < 120; ++i) {
-        target[i] = 0x000;
-        target[120 * 157 + i] = 0x000;
-        target[120 * 156 + i] = 0x000;
-    }
+  int i;
+  for (i = 0; i < 120; ++i) {
+    target[i] = 0x000;
+    target[120 * 157 + i] = 0x000;
+    target[120 * 156 + i] = 0x000;
+  }
 
-    for (uint16_t *start = target; start < target + 120 * 159; start += 120) {
-        start[0] = 0x000;
-        start[1] = 0x000;
-        start[117] = 0x000;
-        start[118] = 0x000;
-    }
+  for (uint16_t *start = target; start < target + 120 * 159; start += 120) {
+    start[0] = 0x000;
+    start[1] = 0x000;
+    start[117] = 0x000;
+    start[118] = 0x000;
+  }
 }
 
 IWRAM_CODE void transform(model_t *model, vertex_t *v)
 {
-    vector3_t temp;
-    
-    temp.x = (model_matrix[0][0] * v->position.x + model_matrix[0][1] * v->position.y + model_matrix[0][2] * v->position.z) >> 8;
-    temp.y = (model_matrix[1][0] * v->position.x + model_matrix[1][1] * v->position.y + model_matrix[1][2] * v->position.z) >> 8;
-    temp.z = (model_matrix[2][0] * v->position.x + model_matrix[2][1] * v->position.y + model_matrix[2][2] * v->position.z) >> 8;
-    
-    temp.x += model->position.x - camera.position.x;
-    temp.y += model->position.y - camera.position.y;
-    temp.z += model->position.z - camera.position.z;
+  vector3_t temp;
 
-    v->position.x = (camera_matrix[0][0] * temp.x + camera_matrix[0][1] * temp.y + camera_matrix[0][2] * temp.z) >> 8;
-    v->position.y = (camera_matrix[1][0] * temp.x + camera_matrix[1][1] * temp.y + camera_matrix[1][2] * temp.z) >> 8;
-    v->position.z = (camera_matrix[2][0] * temp.x + camera_matrix[2][1] * temp.y + camera_matrix[2][2] * temp.z) >> 8;
+  temp.x = (model_matrix[0][0] * v->position.x + model_matrix[0][1] * v->position.y + model_matrix[0][2] * v->position.z) >> 8;
+  temp.y = (model_matrix[1][0] * v->position.x + model_matrix[1][1] * v->position.y + model_matrix[1][2] * v->position.z) >> 8;
+  temp.z = (model_matrix[2][0] * v->position.x + model_matrix[2][1] * v->position.y + model_matrix[2][2] * v->position.z) >> 8;
+
+  temp.x += model->position.x - camera.position.x;
+  temp.y += model->position.y - camera.position.y;
+  temp.z += model->position.z - camera.position.z;
+
+  v->position.x = (camera_matrix[0][0] * temp.x + camera_matrix[0][1] * temp.y + camera_matrix[0][2] * temp.z) >> 8;
+  v->position.y = (camera_matrix[1][0] * temp.x + camera_matrix[1][1] * temp.y + camera_matrix[1][2] * temp.z) >> 8;
+  v->position.z = (camera_matrix[2][0] * temp.x + camera_matrix[2][1] * temp.y + camera_matrix[2][2] * temp.z) >> 8;
 }
 
 void IWRAM_CODE project(vertex_t *v)
