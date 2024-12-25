@@ -1,6 +1,6 @@
 # 2024 Secret Santa demo for Gameboy Advance
 
-[![]([https://files.mastodon.social/cache/preview_cards/images/125/559/115/original/bbd10de6d27ecfce.jpg))](https://www.youtube.com/watch?v=kaPs7L1ywo "")
+[![]([https://files.mastodon.social/cache/preview_cards/images/125/559/115/original/bbd10de6d27ecfce.jpg)](https://www.youtube.com/watch?v=kaPs7L1ywo "")
 
 This demo was created during my 2024 Christmas holiday break as a Secret Santa gift. It will not compile as-is because some assets which cannot be released 
 under the CC0 are missing from this depository. 
