@@ -15,7 +15,6 @@ int uvtable[16 * 8 * 3];
 int shadingtable[20][15];
 uint8_t bytebuffer[8];
 
-#if 1
 IWRAM_CODE void move_table(uint16_t *target, uint8_t *texture, uint16_t *table, int16_t xoffset, int16_t yoffset, uint16_t texture_width, uint16_t t)
 {
 	uint32_t *target32 = (uint32_t*)(target);
@@ -46,59 +45,6 @@ IWRAM_CODE void move_table(uint16_t *target, uint8_t *texture, uint16_t *table, 
 		uv += line;
     } while (++j < endline);
 }
-#else
-IWRAM_CODE void move_table(uint16_t *target, uint8_t *texture, uint16_t *table, 
-                          int16_t xoffset, int16_t yoffset, 
-                          uint16_t texture_width, uint16_t t)
-{
-    uint32_t *target32 = (uint32_t*)(target);
-    uint16_t *uv = (yoffset * 320) + xoffset + (table - 1);
-    // Precompute mask to avoid branching in the inner loop
-    const uint16_t mask = (texture_width == 256) ? 0xFFFF : 0x3FFF;
-    
-    // Precalculate loop constants
-    const uint16_t pixels_per_chunk = 16;  // Process 16 pixels at a time
-    const uint16_t chunks_per_line = 15;   // 240 pixels / 16 pixels per chunk
-    const uint16_t skip = 320 - 240;       // Line skip value
-    
-    // Use register hints for frequently accessed values
-    register uint32_t chunk_count;
-    register uint32_t line_count = 160;
-    register uint16_t tex_idx;
-    register uint32_t pixel_data;
-    
-    // Prefetch hint for texture data
-    __builtin_prefetch(texture);
-    
-    do {
-        chunk_count = chunks_per_line;
-        
-        do {
-            // Process 4 pixels at a time (32-bit writes)
-            #define PROCESS_4_PIXELS { \
-                tex_idx = ((*(++uv) + t) & mask); \
-                pixel_data = texture[tex_idx]; \
-                tex_idx = ((*(++uv) + t) & mask); \
-                pixel_data |= (texture[tex_idx] << 8); \
-                tex_idx = ((*(++uv) + t) & mask); \
-                pixel_data |= (texture[tex_idx] << 16); \
-                tex_idx = ((*(++uv) + t) & mask); \
-                pixel_data |= (texture[tex_idx] << 24); \
-                *target32++ = pixel_data; \
-            }
-            
-            // Unroll 4 times to process 16 pixels
-            PROCESS_4_PIXELS
-            PROCESS_4_PIXELS
-            PROCESS_4_PIXELS
-            PROCESS_4_PIXELS
-            
-        } while (--chunk_count);
-        
-        uv += skip;
-    } while (--line_count);
-}
-#endif
 
 IWRAM_CODE void move_table_sprites(uint16_t *target, uint8_t *texture, uint16_t *table, int16_t xoffset, int16_t yoffset, uint16_t t)
 {
